@@ -2,6 +2,10 @@
 #include "sp_counter.h"
 #include "sp_shared_ptr.h"
 
+#ifdef BERT_DEBUG
+#include <stdio.h>
+#endif
+
 static
 void weak_ptr_init(sp_weak_ptr_t* wp)
 {
@@ -12,19 +16,12 @@ sp_weak_ptr_t* weak_ptr_new()
 {
     sp_weak_ptr_t* wp = (sp_weak_ptr_t* )malloc(sizeof(sp_weak_ptr_t));
     weak_ptr_init(wp);
+#ifdef BERT_DEBUG
+    printf("-- malloc weak_ptr: %p\n", wp);
+#endif
 
     return wp;
 }
-
-/*
-void weak_ptr_delete(sp_weak_ptr_t* wp)
-{
-    if (wp && wp->counter)
-        sp_counter_decweak(wp->counter);
-
-    free(wp);
-}
-*/
 
 sp_weak_ptr_t* weak_ptr_copy(sp_weak_ptr_t* wp)
 {
@@ -80,6 +77,9 @@ void weak_ptr_destructor(sp_weak_ptr_t** wpp)
     if (wp && wp->counter)
         sp_counter_decweak(wp->counter);
 
+#ifdef BERT_DEBUG
+    printf("-- free weak_ptr: %p\n", wp);
+#endif
     free(wp);
 }
 

@@ -1,9 +1,16 @@
 #include <string.h>
 #include "sp_counter.h"
 
+#ifdef BERT_DEBUG
+#include <stdio.h>
+#endif
+
 sp_counter_t* sp_counter_new()
 {
     sp_counter_t* c = (sp_counter_t* )malloc(sizeof(sp_counter_t));
+#ifdef BERT_DEBUG
+    printf("-- malloc sp_counter: %p\n", c);
+#endif
     memset(c, 0, sizeof(sp_counter_t));
     return c;
 }
@@ -17,6 +24,9 @@ void sp_counter_init(sp_counter_t* c)
 
 void sp_counter_delete(sp_counter_t* c)
 {
+#ifdef BERT_DEBUG
+    printf("-- free sp_counter: %p\n", c);
+#endif
     free(c);
 }
 
@@ -41,6 +51,9 @@ void sp_counter_decshare(sp_counter_t* c)
 {
     if (__sync_add_and_fetch(&c->cnt_share, -1) == 0) {
         if (c->resourse && c->deleter) {
+#ifdef BERT_DEBUG
+            printf("-- delete resource: %p\n", c->resourse);
+#endif
             c->deleter(c->resourse);
         }
 

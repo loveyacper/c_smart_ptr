@@ -2,6 +2,10 @@
 #include "sp_counter.h"
 #include "sp_weak_ptr.h"
 
+#ifdef BERT_DEBUG
+#include <stdio.h>
+#endif
+
 static
 void shared_ptr_init(sp_shared_ptr_t* p)
 {
@@ -28,6 +32,9 @@ sp_shared_ptr_t* shared_ptr_new(void* res)
     else
         shared_ptr_init(p);
 
+#ifdef BERT_DEBUG
+    printf("-- malloc shared_ptr: %p\n", p);
+#endif
     return p;
 }
 
@@ -86,6 +93,9 @@ void shared_ptr_destructor(sp_shared_ptr_t** pp)
     if (p && p->counter)
         sp_counter_decshare(p->counter);
 
+#ifdef BERT_DEBUG
+    printf("-- free shared_ptr: %p\n", p);
+#endif
     free(p);
     *pp = NULL;
 }
